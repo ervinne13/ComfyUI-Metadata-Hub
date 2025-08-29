@@ -90,10 +90,22 @@ class SaveImage:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
+        # Convert torch.Tensor to numpy and handle extra dimensions
         if isinstance(image, torch.Tensor):
-            image = image.squeeze(0).cpu().numpy()
+            image = image.cpu().numpy()
+
+        image = np.squeeze(image)
+        if np.issubdtype(image.dtype, np.floating):
             image = (image * 255).clip(0, 255).astype(np.uint8)
-            image = Image.fromarray(image)
+        # If image has shape (H, W), (H, W, 1), (H, W, 3), or (H, W, 4)
+        # If still has more than 3 dims, try to get the last 3 as (H, W, C)
+        if image.ndim > 3:
+            image = image.reshape((-1, image.shape[-2], image.shape[-1]))
+
+        if image.ndim == 3 and image.shape[2] == 1:
+            image = image[:, :, 0]
+
+        image = Image.fromarray(image)
 
         # Exif metadata
         meta = PngImagePlugin.PngInfo()
