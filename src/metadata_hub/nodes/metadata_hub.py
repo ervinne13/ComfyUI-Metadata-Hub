@@ -1,5 +1,5 @@
 
-from dao.exif_data import ExifData
+from metadata_hub.dao.exif_data import ExifData
 from comfy.samplers import SAMPLER_NAMES, SCHEDULER_NAMES
 
 class MetadataHub:

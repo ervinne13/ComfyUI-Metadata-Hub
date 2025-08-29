@@ -4,7 +4,7 @@ import time
 import torch
 import numpy as np
 from PIL import Image, PngImagePlugin
-from dao.exif_data import ExifData
+from metadata_hub.dao.exif_data import ExifData
 
 class SaveImage:
     @classmethod
