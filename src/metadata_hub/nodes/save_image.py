@@ -32,17 +32,17 @@ class SaveImage:
         if isinstance(image, torch.Tensor):
             image = image.cpu().numpy()
 
-        image = np.squeeze(image)
         if np.issubdtype(image.dtype, np.floating):
+            image = np.squeeze(image)
             image = (image * 255).clip(0, 255).astype(np.uint8)
-        # If image has shape (H, W), (H, W, 1), (H, W, 3), or (H, W, 4)
-        # If still has more than 3 dims, try to get the last 3 as (H, W, C)
+        else:
+            # Only squeeze if shape is (H, W, 1) to avoid removing important dimensions
+            if image.ndim == 3 and image.shape[2] == 1:
+                image = image[:, :, 0]
+
+        # If image has more than 3 dims, try to get the last 3 as (H, W, C)
         if image.ndim > 3:
             image = image.reshape((-1, image.shape[-2], image.shape[-1]))
-
-        if image.ndim == 3 and image.shape[2] == 1:
-            image = image[:, :, 0]
-
         image = Image.fromarray(image)
 
         # Exif metadata
