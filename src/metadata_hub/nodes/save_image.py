@@ -41,8 +41,7 @@ class SaveImage:
                 image = image[:, :, 0]
 
         # If image has more than 3 dims, try to get the last 3 as (H, W, C)
-        if image.ndim > 3:
-            image = image.reshape((-1, image.shape[-2], image.shape[-1]))
+            image = image.reshape(image.shape[-3], image.shape[-2], image.shape[-1])
         image = Image.fromarray(image)
 
         # Exif metadata
